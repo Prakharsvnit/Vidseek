@@ -1,0 +1,7 @@
+hybrid search,indexing
+next steps with claude code
+Remove unnecessary files,code
+Understand code,pipeline,each compoent details and document it
+document your design decision-pros,cons tradeoffs,localdevelopemnt
+replace sentence-transformers
+push code in git

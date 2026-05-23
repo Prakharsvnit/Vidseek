@@ -1,0 +1,194 @@
+
+explain in detail as much possible ,what can go wrong how to change and otheredgecases senior must know about
+SessionLocal = (
+    autocommit=False,
+    autoflush=False,
+    bind=engine
+)
+
+explain the role of 
+sessionmaker
+autocommit=False,
+autoflush=False,
+connection pooling
+declarative_base - base class for your ORM models.
+what is sessionfactory and why is session reqd?for ACID
+------------------------------------------
+
+
+
+
+sessionmaker
+
+Creates a Session factory.
+
+A Session represents a conversation with the database.
+
+Example operations done through session:
+
+SELECT
+
+INSERT
+
+UPDATE
+
+DELETE
+
+declarative_base
+
+Creates a base class for your ORM models.
+
+Create database engine
+engine = create_engine(DATABASE_URL)
+
+Creates the SQLAlchemy engine.
+
+It:
+
+manages DB connections
+
+manages connection pool
+
+sends SQL queries to PostgreSQL
+
+Example internally:
+
+engine → connection pool → postgres
+
+Create session factory
+SessionLocal = sessionmaker(
+    autocommit=False,
+    autoflush=False,
+    bind=engine
+)
+
+This creates a session generator.
+
+bind=engine
+
+Tells SQLAlchemy:
+
+All sessions use this engine
+autocommit=False
+
+Means:
+
+You must manually commit changes
+
+Example:
+
+db.add(user)
+db.commit()
+
+This prevents accidental writes.
+
+autoflush=False
+
+SQLAlchemy normally auto-syncs changes before queries.
+
+Disabling autoflush gives more control.
+
+Example flush:
+
+Create Base class
+Base = declarative_base()
+
+This is the base class for all models.
+
+Example:
+
+class User(Base):
+
+Later:
+
+Base.metadata.create_all(engine)
+
+This creates database tables.
+
+Database dependency for FastAPI
+def get_db():
+
+This is a FastAPI dependency.
+
+It provides a database session per request.
+
+Create session
+db = SessionLocal()
+
+Creates a new database session.
+
+Think:
+
+HTTP request → DB session
+
+Yield session
+yield db
+
+yield gives the session to the API route.
+
+Example route:
+
+def get_users(db: Session = Depends(get_db)):
+
+Finally close session
+finally:
+    db.close()
+
+This ensures:
+
+Session always closes
+Connection returns to pool
+
+Example API request:
+
+POST /users
+
+Complete Flow (Configuration → Request → Database)
+
+           CONFIGURATION PHASE
+           -------------------
+
+.env
+  ↓
+database.py loads env variables
+  ↓
+DATABASE_URL constructed
+  ↓
+SQLAlchemy create_engine()
+  ↓
+Connection pool initialized
+  ↓
+SessionLocal factory created
+
+
+
+           REQUEST PHASE
+           -------------
+
+Client request
+  ↓
+FastAPI router
+  ↓
+Dependency injection
+  ↓
+get_db() called
+  ↓
+SessionLocal() creates session
+  ↓
+Session injected into route
+  ↓
+Route runs SQLAlchemy queries
+  ↓
+Engine sends SQL to PostgreSQL
+  ↓
+Database returns results
+  ↓
+FastAPI returns response
+  ↓
+get_db() closes session
+  ↓
+Connection returned to pool
+
+Request A → Session A
+Request B → Session B
+Request C → Session C
