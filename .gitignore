@@ -6,3 +6,6 @@ __pycache__/
 .uv/
 *.db
 .DS_Store
+virtual/
+.venv/
+data/

@@ -1,0 +1,16 @@
+fastapi>=0.115.0
+uvicorn>=0.30.0
+pydantic>=2.0.0
+python-dotenv>=1.0.0
+# Use whichever installs on your platform (code supports both):
+# pip install psycopg[binary]   (psycopg v3 — preferred)
+# pip install psycopg2-binary   (psycopg v2 — fallback)
+psycopg2-binary>=2.9.0
+fastembed>=0.3.0
+numpy>=1.26.0
+yt-dlp>=2024.1.0
+youtube-transcript-api>=0.6.0
+# faster-whisper requires 'av' which needs Cython compilation — install manually if needed
+# pip install faster-whisper
+requests>=2.31.0
+imageio-ffmpeg>=0.4.9
